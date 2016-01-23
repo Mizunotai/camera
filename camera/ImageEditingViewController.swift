@@ -13,23 +13,35 @@ class ImageEditingViewController: UIViewController {
     
     var image :UIImage!
     @IBOutlet var imageview :UIImageView!
-    var trimView1,trimView2,trimgView3,trimView4 : UIImageView!
+    var trimView1,trimView2,trimView3,trimView4 : UIImageView!
+    var location: CGPoint!
+    var currentLocation1,currentLocation2,currentLocation3,currentLocation4 : CGPoint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.imageview.image = self.image
         
-        self.trimView1 = UIImageView(frame: CGRectMake(0, 0, 100, 100))
+        self.trimView1 = UIImageView(frame: CGRectMake(25, 25, 50 , 50))
         trimView1.backgroundColor = UIColor.whiteColor()
-        trimView1.layer.position = CGPoint(x: 0,y: 0)
+        trimView1.layer.position = CGPoint(x: 25,y: 25)
         self.imageview.addSubview(trimView1)
         
-        self.trimView2 = UIImageView(frame: CGRectMake(self.view.frame.origin.x, 0, 100, 100))
+        self.trimView2 = UIImageView(frame: CGRectMake(self.imageview.frame.size.width-25, 25, 50, 50))
         trimView2.backgroundColor = UIColor.whiteColor()
-        trimView2.layer.position = CGPoint(x: self.view.frame.origin.x ,y: 0)
+        trimView2.layer.position = CGPoint(x: self.view.frame.size.width-25 ,y: 25)
         self.imageview.addSubview(trimView2)
-
+        
+        self.trimView3 = UIImageView(frame: CGRectMake(25, self.imageview.frame.size.height-25, 50, 50))
+        trimView3.backgroundColor = UIColor.whiteColor()
+        trimView3.layer.position = CGPoint(x: 25,y: self.imageview.frame.size.height-25)
+        self.imageview.addSubview(trimView3)
+        
+        self.trimView4 = UIImageView(frame:
+                        CGRectMake(self.imageview.frame.size.width-25,self.imageview.frame.size.height-25, 50, 50))
+        trimView4.backgroundColor = UIColor.whiteColor()
+        trimView4.layer.position = CGPoint(x: self.imageview.frame.size.width-25,y: self.imageview.frame.size.height-25)
+        self.imageview.addSubview(trimView4)
         
         // Do any additional setup after loading the view.
     }
@@ -38,8 +50,32 @@ class ImageEditingViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        let touch: UITouch = touches.first!
+        
+        
+        let location: CGPoint = touch.locationInView(self.view)
+        currentLocation1 = location
+        currentLocation2 = location
+        currentLocation3 = location
+        currentLocation4 = location
+        
+           }
+
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        let touch: UITouch = touches.first!
+        location = touch.locationInView(self.view)
+        NSLog("位置 (%f , %f)", location.x,location.y)
+        trimView1.center = CGPointMake(location.x, location.y)
+      trimView2.center = CGPointMake(location.x, location.y)
+        if trimView1.center ==  location{
+        
+        if trimView1.center.x != currentLocation1.x {
+            trimView3.center.x = trimView1.center.x
+            }
+        }
+        
+    }
     
     /*
     // MARK: - Navigation
