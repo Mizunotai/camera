@@ -26,6 +26,9 @@ class ImageEditingViewController: UIViewController {
         trimView1.backgroundColor = UIColor.whiteColor()
         trimView1.layer.position = CGPoint(x: 25,y: 25)
         self.imageview.addSubview(trimView1)
+        trimView1.userInteractionEnabled = true
+        let aSelector = Selector("imageTapped1:")
+        trimView1.addGestureRecognizer(UITapGestureRecognizer(target: self, action:aSelector ))
         
         self.trimView2 = UIImageView(frame: CGRectMake(self.imageview.frame.size.width-25, 25, 50, 50))
         trimView2.backgroundColor = UIColor.whiteColor()
@@ -50,31 +53,31 @@ class ImageEditingViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        let touch: UITouch = touches.first!
-        
-        
-        let location: CGPoint = touch.locationInView(self.view)
-        currentLocation1 = location
-        currentLocation2 = location
-        currentLocation3 = location
-        currentLocation4 = location
-        
-           }
+
 
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let touch: UITouch = touches.first!
-        location = touch.locationInView(self.view)
-        NSLog("位置 (%f , %f)", location.x,location.y)
-        trimView1.center = CGPointMake(location.x, location.y)
-      trimView2.center = CGPointMake(location.x, location.y)
-        if trimView1.center ==  location{
+        location = touch.locationInView(imageview)
+//        NSLog("位置 (%f , %f)", location.x,location.y)
+        currentLocation1 = touch.preciseLocationInView(imageview)
         
-        if trimView1.center.x != currentLocation1.x {
-            trimView3.center.x = trimView1.center.x
-            }
+//        trimView1.center = CGPointMake(location.x, location.y)
+//      trimView2.center = CGPointMake(location.x, location.y)
+//        if trimView1.center ==  location{
+//        
+//        if trimView1.center.x != currentLocation1.x {
+//            trimView3.center.x = trimView1.center.x
+//            }
         }
-        
+        func imageTapped1(sender: UITapGestureRecognizer) {
+            print(sender)
+            trimView1.center = CGPointMake(location.x, location.y)
+            
+            if trimView1.center.x != currentLocation1.x {
+                trimView3.center.x = trimView1.center.x
+            }
+            
+        }
     }
     
     /*
@@ -87,4 +90,4 @@ class ImageEditingViewController: UIViewController {
     }
     */
     
-}
+
