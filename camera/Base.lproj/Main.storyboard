@@ -48,7 +48,7 @@
                     <navigationItem key="navigationItem" id="lNJ-I8-cZb"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="imageview" destination="mES-X8-LNB" id="q6g-CG-l32"/>
+                        <outlet property="backImageview" destination="mES-X8-LNB" id="Bjg-0a-YeW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qfp-3I-d5c" userLabel="First Responder" sceneMemberID="firstResponder"/>
