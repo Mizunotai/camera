@@ -74,7 +74,7 @@ class ViewController: UIViewController {
         myButton.layer.cornerRadius = 20.0
         myButton.layer.position = CGPoint(x: self.view.bounds.width/2, y:self.view.bounds.height-50)
         myButton.addTarget(self, action: "onClickMyButton:", forControlEvents: .TouchUpInside)
-        
+  
         // UIボタンをViewに追加.
         self.view.addSubview(myButton);
     }

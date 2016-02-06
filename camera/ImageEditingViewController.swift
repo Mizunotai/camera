@@ -16,7 +16,6 @@ class ImageEditingViewController: UIViewController {
     var trimView1,trimView2,trimView3,trimView4 : UIImageView!
     var location: CGPoint!
     var currentLocation1,currentLocation2,currentLocation3,currentLocation4 : CGPoint!
-    var tauch1 : Bool?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +26,10 @@ class ImageEditingViewController: UIViewController {
         trimView1.backgroundColor = UIColor.whiteColor()
         trimView1.layer.position = CGPoint(x: 25,y: 50)
         trimView1.userInteractionEnabled = true
+        let myTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "trimView1Moved:")
+        self.trimView1.addGestureRecognizer(myTap)
         self.view.addSubview(trimView1)
+        
         
         self.trimView2 = UIImageView(frame: CGRectMake(self.imageview.frame.size.width-25, 25, 50, 50))
         trimView2.backgroundColor = UIColor.whiteColor()
@@ -56,26 +58,32 @@ class ImageEditingViewController: UIViewController {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let touch: UITouch = touches.first!
         let location: CGPoint = touch.locationInView(self.view)
-        
         currentLocation1 = location
-        
     }
+    
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let touch: UITouch = touches.first!
         location = touch.locationInView(self.view)
-  
-        
-        if trimView1.userInteractionEnabled == false {
-            trimView1.center = CGPointMake(location.x, location.y)
+        //        print(location)
+        trimView1.center = CGPointMake(location.x, location.y)
+//        trimView2.center = CGPointMake(location.x, location.y)
+        if trimView1.center ==  location{
             
             if trimView1.center.x != currentLocation1.x {
                 trimView3.center.x = trimView1.center.x
             }
-            
         }
         
-        
     }
+    
+    //    func tapGesture(sender:UITapGestureRecognizer){
+    ////        self.trimView1sMoved()
+    //
+    //    }
+    //    func trimView1Moved (sender: UITapGestureRecognizer,withEvent touches: Set<UITouch>, withEvent event: UIEvent? ) {
+    //
+    //         print("touch")
+    //    }
 }
 /*
 // MARK: - Navigation
