@@ -13,14 +13,14 @@ class ImageEditingViewController: UIViewController {
     
     var image :UIImage!
     @IBOutlet var backImageview :UIImageView!
-    var trimView1,trimView2,trimView3,trimView4 : UIImageView!
+    var trimTopLeltView,trimTopRightView,trimBottomLeftView,trimBottomRightView : UIImageView!
     var moveView: UIImageView!
-    
     var location: CGPoint!
     var startPoint : CGPoint!
     var isImageInside: Bool?
     var imageListArray : [UIImageView] = []
     var imageViewFrame :CGPoint!
+    var trimmingView : UIImageView!
     
     
     override func viewDidLoad() {
@@ -28,28 +28,38 @@ class ImageEditingViewController: UIViewController {
         
         self.backImageview.image = self.image
         
-        self.trimView1 = UIImageView(frame: CGRectMake(0, 20, 40 , 40))
-        zahyouset(trimView1)
+        self.trimTopLeltView = UIImageView(frame: CGRectMake(0, 20, 40 , 40))
+        zahyouset(trimTopLeltView)
         
-        self.trimView2 = UIImageView(frame: CGRectMake(self.backImageview.frame.size.width-40, 20, 40, 40))
-        zahyouset(trimView2)
+        self.trimTopRightView = UIImageView(frame: CGRectMake(self.backImageview.frame.size.width-40, 20, 40, 40))
+        zahyouset(trimTopRightView)
         
-        self.trimView3 = UIImageView(frame: CGRectMake(0, self.backImageview.frame.size.height-40, 40, 40))
-        zahyouset(trimView3)
+        self.trimBottomLeftView = UIImageView(frame: CGRectMake(0, self.backImageview.frame.size.height-40, 40, 40))
+        zahyouset(trimBottomLeftView)
         
-        self.trimView4 = UIImageView(frame:
+        self.trimBottomRightView = UIImageView(frame:
             CGRectMake(self.backImageview.frame.size.width-40,self.backImageview.frame.size.height-40, 40, 40))
         
-        zahyouset(trimView4)
+        zahyouset(trimBottomRightView)
         
+        let trimWidth = trimTopRightView.center.x - trimTopLeltView.center.y
+        let trimHeight = trimBottomLeftView.center.y - trimTopLeltView.center.y
         
-        self.imageListArray.append(trimView1)
-        self.imageListArray.append(trimView2)
-        self.imageListArray.append(trimView3)
-        self.imageListArray.append(trimView4)
+        trimmingView = UIImageView(frame: CGRectMake(trimTopLeltView.center.x, trimBottomLeftView.center.y,
+            trimWidth , trimHeight) )
+        trimmingView.backgroundColor = UIColor.clearColor()
+        trimmingView.layer.borderColor = UIColor.whiteColor().CGColor
+        self.trimmingView.layer.borderWidth = 4
+        self.backImageview.addSubview(trimmingView)
+        
+        self.imageListArray.append(trimTopLeltView)
+        self.imageListArray.append(trimTopRightView)
+        self.imageListArray.append(trimBottomLeftView)
+        self.imageListArray.append(trimBottomRightView)
         // Do any additional setup after loading the view.
+        
     }
-
+    
     func zahyouset(view: UIImageView){
         view.backgroundColor = UIColor.whiteColor()
         view.layer.cornerRadius = view.frame.size.width / 2
@@ -63,7 +73,7 @@ class ImageEditingViewController: UIViewController {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let touch: UITouch = touches.first!
-        startPoint = touch.locationInView(self.view)
+        startPoint = touch.locationInView(self.backImageview)
         
         for imageView in self.imageListArray {
             if self.compareViewPositon(imageView) {
@@ -99,51 +109,52 @@ class ImageEditingViewController: UIViewController {
         
         if self.isImageInside! {
             let touch: UITouch = touches.first!
-            location = touch.locationInView(self.view)
+            location = touch.locationInView(self.backImageview)
             
             // イメージを移動
             moveView.center = CGPointMake(location.x,location.y)
-            if trimView1.center ==  location{
+            if trimTopLeltView.center ==  location{
                 
-                if trimView1.center.x != startPoint.x {
-                    trimView3.center.x = trimView1.center.x
+                if trimTopLeltView.center.x != startPoint.x {
+                    trimBottomLeftView.center.x = trimTopLeltView.center.x
                 }
-                if trimView1.center.y != startPoint.y {
-                    trimView2.center.y = trimView1.center.y
-                }
-            }
-            if trimView2.center == location {
-                if trimView2.center.x != startPoint.x{
-                    trimView4.center.x = trimView2.center.x
-                }
-                if trimView2.center.y != startPoint.y {
-                    trimView1.center.y = trimView2.center.y
+                if trimTopLeltView.center.y != startPoint.y {
+                    trimBottomLeftView.center.y = trimTopLeltView.center.y
                 }
             }
-            if trimView3.center == location {
-                if trimView3.center.x != startPoint.x{
-                    trimView1.center.x = trimView3.center.x
+            if trimTopRightView.center == location {
+                if trimTopRightView.center.x != startPoint.x{
+                    trimBottomRightView.center.x = trimTopRightView.center.x
                 }
-                if trimView2.center.y != startPoint.y {
-                    trimView4.center.y = trimView3.center.y
-                }
-            }
-            if trimView4.center == location {
-                if trimView4.center.x != startPoint.x{
-                    trimView2.center.x = trimView4.center.x
-                }
-                if trimView2.center.y != startPoint.y {
-                    trimView3.center.y = trimView4.center.y
+                if trimTopRightView.center.y != startPoint.y {
+                    trimTopLeltView.center.y = trimTopRightView.center.y
                 }
             }
-            
-            
-            
-            
+            if trimBottomLeftView.center == location {
+                if trimBottomLeftView.center.x != startPoint.x{
+                    trimTopLeltView.center.x = trimBottomLeftView.center.x
+                }
+                if trimTopRightView.center.y != startPoint.y {
+                    trimBottomRightView.center.y = trimBottomLeftView.center.y
+                }
+            }
+            if trimBottomRightView.center == location {
+                if trimBottomRightView.center.x != startPoint.x{
+                    trimTopRightView.center.x = trimBottomRightView.center.x
+                }
+                if trimTopRightView.center.y != startPoint.y {
+                    trimBottomLeftView.center.y = trimBottomRightView.center.y
+                }
+            }
         } else {
             
         }
-        
+//        if self.trimView1.frame.origin.x + self.trimView1.frame.width > self.trimView2.frame.origin.x{
+//            isImageInside = false
+//        }
+//        if self.backImageview.frame.origin.x > self.trimView1.frame.origin.x{
+//            isImageInside = false
+//        }
     }
 }
 /*
