@@ -21,7 +21,8 @@ class ImageEditingViewController: UIViewController {
     var imageListArray : [UIImageView] = []
     var imageViewFrame :CGPoint!
     var trimmingView : UIImageView!
-    
+    var trimWidth : CGFloat!
+    var trimHeight : CGFloat!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,20 +43,21 @@ class ImageEditingViewController: UIViewController {
         
         zahyouset(trimBottomRightView)
         
-        let trimWidth = trimTopRightView.center.x - trimTopLeltView.center.y
-        let trimHeight = trimBottomLeftView.center.y - trimTopLeltView.center.y
+        self.trimWidth = trimTopRightView.center.x - trimTopLeltView.center.x
+        self.trimHeight = trimBottomLeftView.center.y - trimTopLeltView.center.y
+//        let trimWidth = trimTopRightView.frame.size.width - trimTopLeltView.center.
         
-        trimmingView = UIImageView(frame: CGRectMake(trimTopLeltView.center.x, trimBottomLeftView.center.y,
+        trimmingView = UIImageView(frame: CGRectMake(trimTopLeltView.center.x, trimTopLeltView.center.y,
             trimWidth , trimHeight) )
         trimmingView.backgroundColor = UIColor.clearColor()
         trimmingView.layer.borderColor = UIColor.whiteColor().CGColor
         self.trimmingView.layer.borderWidth = 4
         self.backImageview.addSubview(trimmingView)
         
-        self.imageListArray.append(trimTopLeltView)
-        self.imageListArray.append(trimTopRightView)
-        self.imageListArray.append(trimBottomLeftView)
-        self.imageListArray.append(trimBottomRightView)
+//        self.imageListArray.append(trimTopLeltView)
+//        self.imageListArray.append(trimTopRightView)
+//        self.imageListArray.append(trimBottomLeftView)
+//        self.imageListArray.append(trimBottomRightView)
         // Do any additional setup after loading the view.
         
     }
@@ -64,6 +66,7 @@ class ImageEditingViewController: UIViewController {
         view.backgroundColor = UIColor.whiteColor()
         view.layer.cornerRadius = view.frame.size.width / 2
         self.backImageview.addSubview(view)
+        self.imageListArray.append(view)
     }
     
     override func didReceiveMemoryWarning() {
@@ -110,16 +113,19 @@ class ImageEditingViewController: UIViewController {
         if self.isImageInside! {
             let touch: UITouch = touches.first!
             location = touch.locationInView(self.backImageview)
-            
+            self.trimWidth = trimTopRightView.center.x - trimTopLeltView.center.x
+            self.trimHeight = trimBottomLeftView.center.y - trimTopLeltView.center.y
+
+            trimmingView.frame = CGRectMake(trimTopLeltView.center.x, trimTopLeltView.center.y, trimWidth, trimHeight)
+           
             // イメージを移動
             moveView.center = CGPointMake(location.x,location.y)
             if trimTopLeltView.center ==  location{
-                
                 if trimTopLeltView.center.x != startPoint.x {
                     trimBottomLeftView.center.x = trimTopLeltView.center.x
                 }
                 if trimTopLeltView.center.y != startPoint.y {
-                    trimBottomLeftView.center.y = trimTopLeltView.center.y
+                    trimTopRightView.center.y = trimTopLeltView.center.y
                 }
             }
             if trimTopRightView.center == location {
@@ -149,12 +155,51 @@ class ImageEditingViewController: UIViewController {
         } else {
             
         }
-//        if self.trimView1.frame.origin.x + self.trimView1.frame.width > self.trimView2.frame.origin.x{
-//            isImageInside = false
-//        }
-//        if self.backImageview.frame.origin.x > self.trimView1.frame.origin.x{
-//            isImageInside = false
-//        }
+        
+    }
+    @IBAction func trimButoon() {
+        self.trimWidth = trimTopRightView.center.x - trimTopLeltView.center.x
+        self.trimHeight = trimBottomLeftView.center.y - trimTopLeltView.center.y
+
+        let cropedImage:UIImage = self.cropThumbnailImage(self.image, w: Int(self.trimWidth), h: Int(self.trimHeight))
+        self.backImageview.image = cropedImage
+    }
+    
+    func cropThumbnailImage(image :UIImage, w:Int, h:Int) ->UIImage
+    {
+        // リサイズ処理
+        
+        let origRef    = image.CGImage;
+        let origWidth  = Int(CGImageGetWidth(origRef))
+        let origHeight = Int(CGImageGetHeight(origRef))
+        var resizeWidth:Int = 0, resizeHeight:Int = 0
+        
+        if (origWidth < origHeight) {
+            resizeWidth = w
+            resizeHeight = origHeight * resizeWidth / origWidth
+        } else {
+            resizeHeight = h
+            resizeWidth = origWidth * resizeHeight / origHeight
+        }
+        
+        let resizeSize = CGSizeMake(CGFloat(resizeWidth), CGFloat(resizeHeight))
+        UIGraphicsBeginImageContext(resizeSize)
+        
+        image.drawInRect(CGRectMake(0, 0, CGFloat(resizeWidth), CGFloat(resizeHeight)))
+        
+        let resizeImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        // 切り抜き処理
+        
+        let cropRect  = CGRectMake(
+            CGFloat((resizeWidth - w) / 2),
+            CGFloat((resizeHeight - h) / 2),
+            CGFloat(w), CGFloat(h))
+        let cropRef   = CGImageCreateWithImageInRect(resizeImage.CGImage, cropRect)
+        let cropImage = UIImage(CGImage: cropRef!)
+        
+        return cropImage
     }
 }
 /*
