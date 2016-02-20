@@ -8,8 +8,9 @@
 
 import UIKit
 import AVFoundation
+import PhotoTweaks
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, PhotoTweaksViewControllerDelegate {
     
     
     //カメラセッション
@@ -86,22 +87,32 @@ class ViewController: UIViewController {
     
     // ボタンイベント.
     func onClickMyButton(sender: UIButton){
-        //ビデオ出力に接続
         let captureVideoConnection = imageOutput.connectionWithMediaType(AVMediaTypeVideo)
         
-        //接続から画像を取得
         self.imageOutput.captureStillImageAsynchronouslyFromConnection(captureVideoConnection) { (imageDataBuffer, error) -> Void in
-            //取得したImageのDataBufferをJPEGを変換
             let capturedImageData: NSData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataBuffer)
-            //JPEGからUIImageを作成
             self.Image = UIImage(data: capturedImageData)!
-            //            //アルバムに追加
-//          UIImageWriteToSavedPhotosAlbum(self.Image, self, nil, nil)
-            
-            self.performSegueWithIdentifier("sugue", sender: self)
-            
+//            self.performSegueWithIdentifier("sugue", sender: self)
+            let photoTweaksViewController: PhotoTweaksViewController = PhotoTweaksViewController(image: self.Image)
+            photoTweaksViewController.delegate = self
+            photoTweaksViewController.autoSaveToLibray = true
+            self.navigationController?.pushViewController(photoTweaksViewController, animated: true)
+
         }
+        
+        
+//        UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
+    
+    func photoTweaksController(controller: PhotoTweaksViewController!, didFinishWithCroppedImage croppedImage: UIImage!) {
+        controller.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    func photoTweaksControllerDidCancel(controller: PhotoTweaksViewController!) {
+        controller.navigationController?.popViewControllerAnimated(true)
+
+    }
+
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 //        let viewController2 = segue.destinationViewController as! ImageEditingViewController

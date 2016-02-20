@@ -1,0 +1,10 @@
+PODS:
+  - PhotoTweaks (1.0.2)
+
+DEPENDENCIES:
+  - PhotoTweaks (~> 1.0.2)
+
+SPEC CHECKSUMS:
+  PhotoTweaks: e91ce097f9df435049e7c35d419f9a7749e252bc
+
+COCOAPODS: 0.38.2
